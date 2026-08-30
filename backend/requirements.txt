@@ -9,10 +9,11 @@ langchain-community
 langchain-core
 langchain-qdrant
 langchain-google-genai
-langchain-huggingface
 
-sentence-transformers
 qdrant-client
 pydantic
 pypdf
-pytest
+
+# Optional for local dev without GOOGLE_API_KEY:
+# langchain-huggingface
+# sentence-transformers

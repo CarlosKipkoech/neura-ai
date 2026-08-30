@@ -8,12 +8,13 @@ from langchain_core.documents import Document
 from langchain_qdrant import QdrantVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from src.config import COLLECTION_NAME, QDRANT_PATH
+from src.config import BACKEND_DIR, COLLECTION_NAME, QDRANT_PATH
 from src.embeddings import get_embedding_model
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 POSSIBLE_KNOWLEDGE_BASE_DIRS = [
+    BACKEND_DIR / "knowledge_base",
     REPO_ROOT / "knowledge_base",
     REPO_ROOT / "backend" / "knowledge_base",
     REPO_ROOT / "backend" / "data",
@@ -124,13 +125,18 @@ def load_pdf_documents():
         if "admin" not in allowed_roles:
             allowed_roles = [*allowed_roles, "admin"]
 
+        try:
+            source = str(pdf_path.relative_to(BACKEND_DIR))
+        except ValueError:
+            source = pdf_path.name
+
         documents.append(
             Document(
                 page_content=extracted_text,
                 metadata={
                     "department": department,
                     "allowed_roles": allowed_roles,
-                    "source": str(pdf_path.relative_to(REPO_ROOT)),
+                    "source": source,
                     "title": metadata.get("title") or pdf_path.stem,
                     "classification": metadata.get("classification") or "Internal",
                     "version": metadata.get("version") or "unknown",
