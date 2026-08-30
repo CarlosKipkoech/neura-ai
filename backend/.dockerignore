@@ -1,0 +1,15 @@
+.venv
+venv
+__pycache__
+.pytest_cache
+*.pyc
+.env
+.env.*
+qdrant.db
+data/
+*.db
+.git
+.gitignore
+README.md
+scripts/
+src/tests/

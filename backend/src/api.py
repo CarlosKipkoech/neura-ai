@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import threading
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,10 +17,14 @@ from src.rag import ensure_vector_store, rag_pipeline
 async def lifespan(app: FastAPI):
     init_db()
     seed_demo_users()
-    try:
-        ensure_vector_store()
-    except Exception as exc:
-        print(f"Vector store initialization warning: {exc}")
+
+    def init_vectors():
+        try:
+            ensure_vector_store()
+        except Exception as exc:
+            print(f"Vector store initialization warning: {exc}")
+
+    threading.Thread(target=init_vectors, daemon=True).start()
     yield
 
 

@@ -17,9 +17,11 @@ After deploy, set these env vars in the Render dashboard:
 
 | Variable | Value |
 |----------|-------|
-| `GOOGLE_API_KEY` | Your Gemini API key |
+| `GOOGLE_API_KEY` | Your Gemini API key (**required** for chat embeddings + answers) |
 | `FRONTEND_URL` | `https://carloskipkoech.github.io/neura-ai` |
 | `EXTRA_CORS_ORIGINS` | Same as `FRONTEND_URL` |
+
+First deploy may take 2–3 minutes while the knowledge base indexes in the background. Auth endpoints work immediately; chat works once indexing finishes.
 
 Copy the Render service URL (e.g. `https://neura-ai-api.onrender.com`).
 

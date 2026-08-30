@@ -1,6 +1,6 @@
 from langchain_core.embeddings import Embeddings
 
-from src.config import EMBEDDING_MODEL_NAME
+from src.config import EMBEDDING_MODEL_NAME, GOOGLE_API_KEY
 
 
 class _FallbackEmbeddings(Embeddings):
@@ -13,12 +13,23 @@ class _FallbackEmbeddings(Embeddings):
 
 def get_embedding_model():
     """
-    Returns an instance of the HuggingFaceEmbeddings model based on the specified model name.
-    Falls back gracefully if the model dependency is unavailable in this environment.
+    Prefer Google embeddings in production (lightweight, no local ML model).
+    Fall back to HuggingFace locally when no API key is configured.
     """
+    if GOOGLE_API_KEY:
+        try:
+            from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+            return GoogleGenerativeAIEmbeddings(
+                model="models/embedding-001",
+                google_api_key=GOOGLE_API_KEY,
+            )
+        except Exception as exc:
+            print(f"Google embeddings unavailable: {exc}")
+
     try:
         from langchain_huggingface import HuggingFaceEmbeddings
+
+        return HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
     except Exception:
         return _FallbackEmbeddings()
-
-    return HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
