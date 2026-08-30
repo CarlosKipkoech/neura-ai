@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      ;(function () {
+        var base = '/neura-ai/'
+        var path =
+          window.location.pathname.replace(base, '/') +
+          window.location.search +
+          window.location.hash
+        window.sessionStorage.setItem('redirect', path)
+        window.location.replace(base)
+      })()
+    </script>
+  </head>
+  <body></body>
+</html>
