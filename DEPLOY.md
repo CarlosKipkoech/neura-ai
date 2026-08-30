@@ -11,6 +11,8 @@
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/CarlosKipkoech/neura-ai)
 
+On the Render Blueprint screen, connect your GitHub repo and apply the spec. The free tier does **not** support persistent disks — the app uses `/tmp` for SQLite and Qdrant. Demo users and the knowledge base are re-seeded on each cold start; signups are lost after redeploys or long idle spin-downs.
+
 After deploy, set these env vars in the Render dashboard:
 
 | Variable | Value |
