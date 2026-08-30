@@ -1,46 +1,113 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react'
 import type { User, UserRole } from '@/types'
-import { DEMO_USERS } from '@/data/mockData'
+import { ROLE_LABELS } from '@/types'
+import { fetchMe, login as apiLogin, signup as apiSignup, type AuthResponse } from '@/lib/api'
 
 interface AuthContextType {
   user: User | null
+  token: string | null
   isAuthenticated: boolean
-  login: (username: string, role: UserRole) => void
+  isLoading: boolean
+  login: (username: string, password: string) => Promise<void>
+  signup: (payload: {
+    username: string
+    name: string
+    password: string
+    role: UserRole
+  }) => Promise<void>
   logout: () => void
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
+const STORAGE_KEY = 'neura-auth'
+
+function toUser(auth: AuthResponse['user']): User {
+  return {
+    id: auth.id,
+    username: auth.username,
+    name: auth.name,
+    role: auth.role as UserRole,
+    department: auth.department || ROLE_LABELS[auth.role as UserRole] || auth.role,
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    const stored = sessionStorage.getItem('finsolve-user')
-    return stored ? JSON.parse(stored) : null
-  })
+  const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const persistAuth = useCallback((nextToken: string | null, nextUser: User | null) => {
+    setToken(nextToken)
+    setUser(nextUser)
+    if (nextToken && nextUser) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ token: nextToken, user: nextUser }))
+    } else {
+      localStorage.removeItem(STORAGE_KEY)
+    }
+  }, [])
 
   useEffect(() => {
-    if (user) {
-      sessionStorage.setItem('finsolve-user', JSON.stringify(user))
-    } else {
-      sessionStorage.removeItem('finsolve-user')
-    }
-  }, [user])
+    const bootstrap = async () => {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (!stored) {
+        setIsLoading(false)
+        return
+      }
 
-  const login = (username: string, role: UserRole) => {
-    const existing = DEMO_USERS.find((u) => u.username === username)
-    const newUser: User = existing ?? {
-      id: crypto.randomUUID(),
-      username,
-      name: username.split('.').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' '),
-      role,
-      department: role.charAt(0).toUpperCase() + role.slice(1),
+      try {
+        const parsed = JSON.parse(stored) as { token: string; user: User }
+        const me = await fetchMe(parsed.token)
+        persistAuth(parsed.token, toUser(me))
+      } catch {
+        localStorage.removeItem(STORAGE_KEY)
+      } finally {
+        setIsLoading(false)
+      }
     }
-    setUser({ ...newUser, role })
-  }
 
-  const logout = () => setUser(null)
+    bootstrap()
+  }, [persistAuth])
+
+  const login = useCallback(
+    async (username: string, password: string) => {
+      const response = await apiLogin({ username, password })
+      persistAuth(response.access_token, toUser(response.user))
+    },
+    [persistAuth],
+  )
+
+  const signup = useCallback(
+    async (payload: { username: string; name: string; password: string; role: UserRole }) => {
+      const response = await apiSignup(payload)
+      persistAuth(response.access_token, toUser(response.user))
+    },
+    [persistAuth],
+  )
+
+  const logout = useCallback(() => {
+    persistAuth(null, null)
+  }, [persistAuth])
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isAuthenticated: !!user && !!token,
+        isLoading,
+        login,
+        signup,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

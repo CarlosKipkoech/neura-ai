@@ -71,6 +71,23 @@ function SourceCard({ source }: { source: SourceDocument }) {
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed pt-3">
                 {source.content}
               </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {source.classification && (
+                  <span className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)]">
+                    {source.classification}
+                  </span>
+                )}
+                {source.source && (
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)]">
+                    {source.source}
+                  </span>
+                )}
+              </div>
+              {source.allowedRoles && source.allowedRoles.length > 0 && (
+                <p className="text-[10px] text-[var(--text-muted)] mt-2">
+                  Roles: {source.allowedRoles.join(', ')}
+                </p>
+              )}
               {source.lastUpdated && (
                 <p className="text-[10px] text-[var(--text-muted)] mt-2">
                   Last updated: {source.lastUpdated}

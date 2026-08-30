@@ -1,0 +1,14 @@
+{
+  "department": "Finance",
+  "document_type": "Policy",
+  "access_roles": [
+    "finance",
+    "employee",
+    "manager",
+    "admin"
+  ],
+  "classification": "Internal",
+  "created": "2026-03-31",
+  "title": "Expense Management Policy",
+  "version": "1.0"
+}

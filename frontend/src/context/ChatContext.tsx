@@ -6,8 +6,8 @@ import {
   type ReactNode,
 } from 'react'
 import type { ChatMessage, Conversation, SourceDocument } from '@/types'
-import { INITIAL_CONVERSATIONS } from '@/data/mockData'
 import { generateId } from '@/lib/utils'
+import { sendChatMessage } from '@/lib/api'
 import { useAuth } from '@/context/AuthContext'
 
 interface ChatContextType {
@@ -30,11 +30,9 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | null>(null)
 
 export function ChatProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth()
-  const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS)
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(
-    INITIAL_CONVERSATIONS[0]?.id ?? null,
-  )
+  const { token } = useAuth()
+  const [conversations, setConversations] = useState<Conversation[]>([])
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
   const [isStreaming, setIsStreaming] = useState(false)
   const [sourcesPanelOpen, setSourcesPanelOpen] = useState(true)
   const [activeSources, setActiveSources] = useState<SourceDocument[]>([])
@@ -81,6 +79,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           confidence: typeof source.confidence === 'number' ? source.confidence : 0.85,
           page: typeof source.page === 'number' ? source.page : undefined,
           lastUpdated: typeof source.lastUpdated === 'string' ? source.lastUpdated : undefined,
+          source: typeof source.source === 'string' ? source.source : undefined,
+          classification: typeof source.classification === 'string' ? source.classification : undefined,
+          allowedRoles: Array.isArray(source.allowedRoles)
+            ? source.allowedRoles.filter((role): role is string => typeof role === 'string')
+            : undefined,
         }
       }
 
@@ -135,16 +138,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       setIsStreaming(true)
 
       try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: user?.username ?? 'anonymous',
-            question: content.trim(),
-          }),
-        })
+        if (!token) {
+          throw new Error('Missing auth token')
+        }
 
-        const data = await response.json()
+        const data = await sendChatMessage(token, content.trim())
         const answer = typeof data?.answer === 'string' ? data.answer : 'I could not generate a response right now.'
         const sources = normalizeSources(Array.isArray(data?.sources) ? data.sources : [])
 
@@ -182,7 +180,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setIsStreaming(false)
       }
     },
-    [activeConversationId, createConversation, isStreaming, normalizeSources, user?.username],
+    [activeConversationId, createConversation, isStreaming, normalizeSources, token],
   )
 
   const toggleSourcesPanel = () => setSourcesPanelOpen((v) => !v)

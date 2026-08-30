@@ -24,6 +24,9 @@ export interface SourceDocument {
   confidence: number
   page?: number
   lastUpdated?: string
+  source?: string
+  classification?: string
+  allowedRoles?: string[]
 }
 
 export interface ChatMessage {

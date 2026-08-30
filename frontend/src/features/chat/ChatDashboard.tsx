@@ -7,9 +7,10 @@ export function ChatDashboard() {
   const { sourcesPanelOpen, activeSources, setSourcesPanelOpen } = useChat()
 
   return (
-    <div className="h-screen flex bg-[var(--bg-primary)] gradient-mesh">
+    <div className="h-screen flex bg-[var(--bg-primary)] overflow-hidden">
+      <div className="absolute inset-0 gradient-mesh-neura pointer-events-none" />
       <Sidebar />
-      <main className="flex-1 flex min-w-0">
+      <main className="flex-1 flex min-w-0 relative">
         <ChatInterface />
         <SourcePanel
           sources={activeSources}

@@ -1,0 +1,14 @@
+{
+  "department": "Human Resources",
+  "document_type": "Handbook",
+  "access_roles": [
+    "hr",
+    "employee",
+    "manager",
+    "admin"
+  ],
+  "classification": "Internal",
+  "created": "2026-03-31",
+  "title": "Employee Handbook",
+  "version": "4.0"
+}

@@ -8,7 +8,15 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, adminOnly }: ProtectedRouteProps) {
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, isLoading, user } = useAuth()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+        <div className="text-sm text-[var(--text-muted)]">Loading session…</div>
+      </div>
+    )
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />

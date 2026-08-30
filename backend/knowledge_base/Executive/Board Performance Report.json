@@ -1,0 +1,13 @@
+{
+  "department": "Executive",
+  "document_type": "Board Report",
+  "access_roles": [
+    "executive",
+    "finance",
+    "admin"
+  ],
+  "classification": "Restricted",
+  "created": "2026-03-31",
+  "title": "Board Performance Report",
+  "version": "1.0"
+}

@@ -1,0 +1,15 @@
+{
+  "department": "Operations",
+  "document_type": "SOP",
+  "access_roles": [
+    "operations",
+    "employee",
+    "manager",
+    "engineering",
+    "admin"
+  ],
+  "classification": "Internal",
+  "created": "2026-03-31",
+  "title": "Standard Operating Procedures",
+  "version": "2.0"
+}

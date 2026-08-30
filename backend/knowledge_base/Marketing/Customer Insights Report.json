@@ -1,0 +1,14 @@
+{
+  "department": "Marketing",
+  "document_type": "Research Report",
+  "access_roles": [
+    "marketing",
+    "executive",
+    "manager",
+    "admin"
+  ],
+  "classification": "Confidential",
+  "created": "2026-03-31",
+  "title": "Customer Insights Report",
+  "version": "1.0"
+}

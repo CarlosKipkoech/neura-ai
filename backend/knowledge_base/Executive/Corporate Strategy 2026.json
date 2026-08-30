@@ -1,0 +1,16 @@
+{
+  "department": "Executive",
+  "document_type": "Strategy Document",
+  "access_roles": [
+    "executive",
+    "employee",
+    "manager",
+    "finance",
+    "marketing",
+    "admin"
+  ],
+  "classification": "Confidential",
+  "created": "2026-03-31",
+  "title": "Corporate Strategy 2026",
+  "version": "1.0"
+}
