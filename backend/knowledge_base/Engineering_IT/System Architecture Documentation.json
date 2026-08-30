@@ -1,0 +1,14 @@
+{
+  "department": "Engineering IT",
+  "document_type": "Technical Documentation",
+  "access_roles": [
+    "engineering",
+    "manager",
+    "executive",
+    "admin"
+  ],
+  "classification": "Confidential",
+  "created": "2026-03-31",
+  "title": "System Architecture Documentation",
+  "version": "3.0"
+}

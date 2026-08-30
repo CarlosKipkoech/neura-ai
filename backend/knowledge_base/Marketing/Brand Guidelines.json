@@ -1,0 +1,14 @@
+{
+  "department": "Marketing",
+  "document_type": "Brand Guide",
+  "access_roles": [
+    "marketing",
+    "employee",
+    "manager",
+    "admin"
+  ],
+  "classification": "Internal",
+  "created": "2026-03-31",
+  "title": "Brand Guidelines",
+  "version": "2.0"
+}

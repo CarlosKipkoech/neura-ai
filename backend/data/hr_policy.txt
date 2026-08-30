@@ -1,0 +1,2 @@
+The HR department manages employee records, salaries, and recruitment information.
+Only HR employees and administrators can access employee information.

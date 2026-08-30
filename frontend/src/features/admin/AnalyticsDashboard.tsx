@@ -103,7 +103,7 @@ export function AnalyticsDashboard() {
                   Admin Analytics
                 </h1>
                 <p className="text-xs text-[var(--text-muted)]">
-                  FinSolve AI Platform Overview
+                  Neura AI Platform Overview
                 </p>
               </div>
             </div>

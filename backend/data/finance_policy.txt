@@ -1,0 +1,2 @@
+The finance department manages company budgets, expenses, and financial reports.
+Only finance employees and administrators can access financial information.

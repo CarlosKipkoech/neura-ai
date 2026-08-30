@@ -1,0 +1,15 @@
+{
+  "department": "Human Resources",
+  "document_type": "Policy",
+  "access_roles": [
+    "hr",
+    "employee",
+    "manager",
+    "finance",
+    "admin"
+  ],
+  "classification": "Internal",
+  "created": "2026-03-31",
+  "title": "Payroll and Benefits Policy",
+  "version": "2.0"
+}

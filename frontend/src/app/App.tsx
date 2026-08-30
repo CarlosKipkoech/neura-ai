@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/context/ThemeContext'
 import { ChatProvider } from '@/context/ChatContext'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 import { LoginPage } from '@/features/auth/LoginPage'
+import { SignUpPage } from '@/features/auth/SignUpPage'
 import { ChatDashboard } from '@/features/chat/ChatDashboard'
 import { AnalyticsDashboard } from '@/features/admin/AnalyticsDashboard'
 
@@ -13,6 +14,7 @@ export function AppRoutes() {
     <AnimatePresence mode="wait">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route
           path="/chat"
           element={

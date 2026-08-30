@@ -6,7 +6,7 @@ import {
   PanelLeft,
   LogOut,
   BarChart3,
-  Sparkles,
+  Brain,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
@@ -40,8 +40,8 @@ export function Sidebar() {
       animate={{ width: sidebarCollapsed ? 72 : 280 }}
       transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
       className={cn(
-        'h-full flex flex-col border-r border-[var(--border-default)]',
-        'bg-[var(--bg-secondary)] shrink-0 overflow-hidden',
+        'h-full flex flex-col border-r border-[var(--border-subtle)] shrink-0 overflow-hidden',
+        'bg-[var(--bg-secondary)]/80 backdrop-blur-xl',
       )}
     >
       {/* Header */}
@@ -52,16 +52,18 @@ export function Sidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-2.5"
+              className="flex items-center gap-3"
             >
-              <div className="h-8 w-8 rounded-lg gradient-brand flex items-center justify-center">
-                <Sparkles className="h-4 w-4 text-white" />
+              <div className="h-9 w-9 rounded-xl neura-orb-sm flex items-center justify-center">
+                <Brain className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[var(--text-primary)] leading-none">
-                  FinSolve AI
+                <p className="text-sm font-semibold text-[var(--text-primary)] leading-none tracking-tight">
+                  Neura <span className="text-gradient-neura">AI</span>
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Enterprise</p>
+                <p className="text-[10px] text-[var(--text-muted)] mt-1 uppercase tracking-[0.2em]">
+                  Enterprise
+                </p>
               </div>
             </motion.div>
           )}
@@ -83,47 +85,57 @@ export function Sidebar() {
         <Button
           variant="primary"
           size={sidebarCollapsed ? 'icon' : 'md'}
-          className={cn('w-full', sidebarCollapsed && 'mx-auto')}
+          className={cn('w-full neura-btn', sidebarCollapsed && 'mx-auto')}
           onClick={createConversation}
         >
           <Plus className="h-4 w-4" />
-          {!sidebarCollapsed && 'New Chat'}
+          {!sidebarCollapsed && 'New session'}
         </Button>
       </div>
 
       {/* Conversations */}
       <div className="flex-1 overflow-y-auto px-3 py-1">
         {!sidebarCollapsed && (
-          <p className="text-[10px] font-medium uppercase tracking-wider text-[var(--text-muted)] px-2 mb-2">
-            Recent
+          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--text-muted)] px-2 mb-2">
+            Sessions
           </p>
         )}
-        <div className="space-y-0.5">
-          {conversations.map((conv) => (
-            <motion.button
-              key={conv.id}
-              whileHover={{ x: 2 }}
-              onClick={() => selectConversation(conv.id)}
-              className={cn(
-                'w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left transition-colors',
-                activeConversationId === conv.id
-                  ? 'bg-brand-500/10 text-brand-400'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]',
-              )}
-              title={sidebarCollapsed ? conv.title : undefined}
-            >
-              <MessageSquare className="h-4 w-4 shrink-0" />
-              {!sidebarCollapsed && (
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{conv.title}</p>
-                  <p className="text-[10px] text-[var(--text-muted)]">
-                    {formatRelativeTime(conv.updatedAt)}
-                  </p>
-                </div>
-              )}
-            </motion.button>
-          ))}
-        </div>
+
+        {conversations.length === 0 && !sidebarCollapsed ? (
+          <div className="px-3 py-8 text-center">
+            <MessageSquare className="h-8 w-8 text-[var(--text-muted)]/40 mx-auto mb-3" />
+            <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+              No sessions yet. Start a new query to begin.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-0.5">
+            {conversations.map((conv) => (
+              <motion.button
+                key={conv.id}
+                whileHover={{ x: 2 }}
+                onClick={() => selectConversation(conv.id)}
+                className={cn(
+                  'w-full flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 text-left transition-all duration-200',
+                  activeConversationId === conv.id
+                    ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] border border-transparent',
+                )}
+                title={sidebarCollapsed ? conv.title : undefined}
+              >
+                <MessageSquare className="h-4 w-4 shrink-0 opacity-70" />
+                {!sidebarCollapsed && (
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm truncate">{conv.title}</p>
+                    <p className="text-[10px] text-[var(--text-muted)]">
+                      {formatRelativeTime(conv.updatedAt)}
+                    </p>
+                  </div>
+                )}
+              </motion.button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* User Profile */}

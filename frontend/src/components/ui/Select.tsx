@@ -8,9 +8,10 @@ interface SelectProps {
   options: { value: string; label: string }[]
   className?: string
   id?: string
+  disabled?: boolean
 }
 
-export function Select({ label, value, onChange, options, className, id }: SelectProps) {
+export function Select({ label, value, onChange, options, className, id, disabled }: SelectProps) {
   return (
     <div className={cn('space-y-1.5', className)}>
       {label && (
@@ -23,8 +24,10 @@ export function Select({ label, value, onChange, options, className, id }: Selec
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
           className={cn(
-            'w-full h-11 px-4 pr-10 rounded-xl text-sm appearance-none cursor-pointer',
+            'w-full h-11 px-4 pr-10 rounded-xl text-sm appearance-none',
+            disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
             'bg-[var(--bg-tertiary)] border border-[var(--border-default)]',
             'text-[var(--text-primary)]',
             'transition-all duration-200',

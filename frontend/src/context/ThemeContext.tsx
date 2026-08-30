@@ -12,7 +12,7 @@ const ThemeContext = createContext<ThemeContextType | null>(null)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
-    const stored = localStorage.getItem('finsolve-theme') as Theme | null
+    const stored = (localStorage.getItem('neura-theme') ?? localStorage.getItem('finsolve-theme')) as Theme | null
     return stored ?? 'dark'
   })
 
@@ -20,7 +20,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement
     root.classList.remove('dark', 'light')
     root.classList.add(theme)
-    localStorage.setItem('finsolve-theme', theme)
+    localStorage.setItem('neura-theme', theme)
   }, [theme])
 
   const toggleTheme = () => setThemeState((t) => (t === 'dark' ? 'light' : 'dark'))
