@@ -5,6 +5,7 @@ from src.auth.users import get_user, normalize_username
 from src.memory import ConversationMemory
 from src.ingest import run_ingestion
 import re
+import threading
 
 memory = ConversationMemory()
 retriever = None
@@ -68,17 +69,24 @@ def _rerank_results(question: str, results: list) -> list:
     return [doc for _, _, doc in scored]
 
 
+_init_lock = threading.Lock()
+
+
 def get_retriever():
     global retriever
-    if retriever is None:
+    if retriever is not None and not isinstance(retriever, UnavailableRetriever):
+        return retriever
+
+    with _init_lock:
+        if retriever is not None and not isinstance(retriever, UnavailableRetriever):
+            return retriever
         try:
-            retriever = Retriever()
-        except Exception:
-            try:
-                run_ingestion()
-                retriever = Retriever()
-            except Exception:
-                retriever = UnavailableRetriever()
+            store = run_ingestion()
+            retriever = Retriever(store)
+            print("Retriever ready")
+        except Exception as ingest_err:
+            print(f"Vector store ingestion failed: {ingest_err}")
+            retriever = UnavailableRetriever()
     return retriever
 
 

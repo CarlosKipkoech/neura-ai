@@ -12,8 +12,12 @@ class Retriever:
     4. Returning authorized documents only
     """
 
-    def __init__(self):
+    def __init__(self, vectorstore=None):
         from langchain_qdrant import QdrantVectorStore
+
+        if vectorstore is not None:
+            self.vectorstore = vectorstore
+            return
 
         self.embeddings = get_embedding_model()
         self.vectorstore = QdrantVectorStore.from_existing_collection(

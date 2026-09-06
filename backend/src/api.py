@@ -49,7 +49,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_origin_regex=(
-        r"https://([a-z0-9-]+\.)*(vercel\.app|github\.io|trycloudflare\.com|onrender\.com)$"
+        r"https://([a-z0-9-]+\.)*(vercel\.app|github\.io|trycloudflare\.com|onrender\.com|fly\.dev)$"
     ),
     allow_credentials=True,
     allow_methods=["*"],
@@ -108,6 +108,5 @@ def chat(
 def reindex(current_user: UserResponse = Depends(get_current_user)):
     if current_user.role != "admin":
         return {"detail": "Admin access required"}
-    run_ingestion()
     ensure_vector_store(force_reload=True)
     return {"message": "Knowledge base reindexed"}

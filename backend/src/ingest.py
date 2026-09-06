@@ -151,18 +151,19 @@ def run_ingestion():
     documents = load_pdf_documents()
     print(f"Loaded {len(documents)} PDF pages for ingestion")
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=120)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1800, chunk_overlap=150)
     chunks = text_splitter.split_documents(documents)
     print(f"Created {len(chunks)} chunks")
 
     embeddings = get_embedding_model()
-    QdrantVectorStore.from_documents(
+    store = QdrantVectorStore.from_documents(
         documents=chunks,
         embedding=embeddings,
         path=QDRANT_PATH,
         collection_name=COLLECTION_NAME,
     )
     print("PDF knowledge base successfully stored in Qdrant")
+    return store
 
 
 if __name__ == "__main__":

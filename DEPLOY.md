@@ -5,36 +5,30 @@
 | Service | URL |
 |---------|-----|
 | Frontend (GitHub Pages) | https://carloskipkoech.github.io/neura-ai/ |
-| Backend (Render) | Set up once — see below |
+| Backend (Fly) | https://neura-ai-api.fly.dev |
 
-## One-click backend (Render, free tier)
+## Backend (Fly)
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/CarlosKipkoech/neura-ai)
+The API is deployed from `backend/` with `fly.toml`.
 
-On the Render Blueprint screen, connect your GitHub repo and apply the spec. The free tier does **not** support persistent disks — the app uses `/tmp` for SQLite and Qdrant. Demo users and the knowledge base are re-seeded on each cold start; signups are lost after redeploys or long idle spin-downs.
+```bash
+cd backend
+fly deploy --remote-only --app neura-ai-api
+```
 
-After deploy, set these env vars in the Render dashboard:
-
-| Variable | Value |
-|----------|-------|
-| `GOOGLE_API_KEY` | Your Gemini API key (**required** for chat embeddings + answers) |
-| `FRONTEND_URL` | `https://carloskipkoech.github.io/neura-ai` |
-| `EXTRA_CORS_ORIGINS` | Same as `FRONTEND_URL` |
-
-First deploy may take 2–3 minutes while the knowledge base indexes in the background. Auth endpoints work immediately; chat works once indexing finishes.
-
-Copy the Render service URL (e.g. `https://neura-ai-api.onrender.com`).
+Secrets already set on the app: `GOOGLE_API_KEY`, `JWT_SECRET`. SQLite and Qdrant live in `/tmp` and are rebuilt on each machine start (about 1–2 minutes for embeddings).
 
 ## Frontend (GitHub Pages — automatic)
 
-Pushes to `main` deploy via GitHub Actions. Set this repository secret:
+Pushes to `main` deploy via GitHub Actions. The Pages secret is:
 
 | Secret | Value |
 |--------|-------|
-| `VITE_API_URL` | Your Render API URL (no trailing slash) |
+| `VITE_API_URL` | `https://neura-ai-api.fly.dev` |
 
 ```bash
-gh secret set VITE_API_URL --body "https://neura-ai-api.onrender.com"
+gh secret set VITE_API_URL --body "https://neura-ai-api.fly.dev"
+gh workflow run deploy-frontend.yml
 ```
 
 ## Local development
